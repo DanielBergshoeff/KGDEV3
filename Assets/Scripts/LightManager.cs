@@ -7,7 +7,6 @@ public class LightManager : MonoBehaviour {
     public static LightManager lightManager;
 
     public List<GameObject> lights;
-    public LayerMask layerObstruction;
 
 	// Use this for initialization
 	void Start () {
@@ -20,11 +19,11 @@ public class LightManager : MonoBehaviour {
 	}
 
     /// <summary>
-    /// Returns true if the position is in the shadow of any light that is in range
+    /// Returns the object casting the shadow if the position is in its shadow
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    public static bool InShadow(Vector3 position) {
+    public static GameObject InShadow(Vector3 position, LayerMask layerToCheck) {
         List<GameObject> lightsInRange = lightManager.GetLightsInRange(position);
 
         for (int i = 0; i < lightsInRange.Count; i++) {
@@ -32,14 +31,14 @@ public class LightManager : MonoBehaviour {
             var heading = position - lightsInRange[i].transform.position;
             var direction = heading / heading.magnitude;
             Debug.DrawRay(lightsInRange[i].transform.position, direction * lightsInRange[i].GetComponent<Light>().range);
-            if (Physics.Raycast(lightsInRange[i].transform.position, direction, out hit, lightsInRange[i].GetComponent<Light>().range, lightManager.layerObstruction)) {
+            if (Physics.Raycast(lightsInRange[i].transform.position, direction, out hit, lightsInRange[i].GetComponent<Light>().range, layerToCheck)) {
                 if (hit.point != position) {
-                    return true;
+                    return hit.collider.gameObject;
                 }
             }
         }
-
-        return false;
+        
+        return null;
     }
 
     /// <summary>
