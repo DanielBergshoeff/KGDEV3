@@ -45,10 +45,10 @@ public class Bullet : MonoBehaviour {
                     break;
             }
 
+            EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
+            enemyAI.TakeDamage(damage);
+
             UICanvas.DamageDone.Invoke(collision.contacts[0].point, damage);
-        }
-        else {
-            UICanvas.DamageDone.Invoke(collision.contacts[0].point, 0);
         }
     }
 }

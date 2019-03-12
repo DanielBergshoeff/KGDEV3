@@ -727,7 +727,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4304706652271848}
   - component: {fileID: 95760701528669282}
-  - component: {fileID: 114947581846754156}
   - component: {fileID: 114678117465013014}
   m_Layer: 9
   m_Name: Enemy
@@ -1319,7 +1318,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1653473100538784}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.14, y: 1, z: -9.46}
+  m_LocalPosition: {x: -10.040075, y: 0.5, z: 1.4770677}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 4616912243488036}
@@ -2031,21 +2030,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 3
---- !u!114 &114947581846754156
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1653473100538784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46801778cacc3f948a14296a25f32160, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GridReference: {fileID: 0}
-  StartPosition: {fileID: 4304706652271848}
-  TargetPosition: {fileID: 0}
-  enemyAI: {fileID: 114678117465013014}
+  distanceToTurn: 10
 --- !u!137 &137415773980095464
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

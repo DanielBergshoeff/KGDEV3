@@ -12,12 +12,15 @@ public class EnemyAI : MonoBehaviour {
 
     public List<Node> CurrentPath;//The completed path that the red line will be drawn along
     public float walkSpeed = 1.0f;
-    public Vector3 target;
+    public float Health {
+        get { return health; }
+        set {
+            health = value;
+        }
+    }
 
-    //Temporary variables
-    public Pathfinding Pathfinding; 
-    public Grid Grid; 
-
+    private float health = 100.0f;
+    
     private Animator animator;
     private State currentState;
 
@@ -63,6 +66,7 @@ public class EnemyAI : MonoBehaviour {
             if (CurrentPath.Count > 0) {
                 if (CurrentPath[0] != null) {
                     if (Vector3.Distance(CurrentPath[0].vPosition, transform.position) < 0.01f) {
+                        transform.LookAt(CurrentPath[0].vPosition);
                         CurrentPath.RemoveAt(0);
                     }
                     else {
@@ -70,24 +74,7 @@ public class EnemyAI : MonoBehaviour {
                         transform.LookAt(CurrentPath[0].vPosition);
                     }
                 }
-            } /*
-            else {
-                float timeNotSeen = 0.0f;
-                Node node = null;
-
-                for (int i = 0; i < Grid.NodeArray.GetLength(0); i++) {
-                    for (int j = 0; j < Grid.NodeArray.GetLength(1); j++) {
-                        if(Grid.NodeArray[i, j].bIsWall == true) { //If the node is not a wall
-                            if(Grid.NodeArray[i, j].timeNotSeen >= timeNotSeen) { //If this node has not been seen for a longer time than current node
-                                node = Grid.NodeArray[i, j];
-                                timeNotSeen = node.timeNotSeen;
-                            }
-                        }
-                    }
-                }
-
-                CurrentPath = Pathfinding.FindPath(transform.position, node.vPosition);
-            }*/
+            }
         } 
     }
 
@@ -119,8 +106,11 @@ public class EnemyAI : MonoBehaviour {
     }
 
     private void Attack() {
-        transform.LookAt(target);
         animator.SetFloat("Speed", 0f);
         animator.SetBool("Aim", true);
+    }
+
+    public void TakeDamage(float damage) {
+        Health -= damage;
     }
 }

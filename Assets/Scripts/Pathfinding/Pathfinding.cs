@@ -6,10 +6,8 @@ public class Pathfinding : MonoBehaviour {
 
     public Grid GridReference;//For referencing the grid class
 
-    public List<Node> FindPath(Vector3 a_StartPos, Vector3 a_TargetPos) {
+    public List<Node> FindPath(Node StartNode, Node TargetNode) {
         List<Node> FinalPath = new List<Node>();
-        Node StartNode = GridReference.NodeFromWorldPoint(a_StartPos);//Gets the node closest to the starting position
-        Node TargetNode = GridReference.NodeFromWorldPoint(a_TargetPos);//Gets the node closest to the target position
 
         List<Node> OpenList = new List<Node>();//List of nodes for the open list
         HashSet<Node> ClosedList = new HashSet<Node>();//Hashset of nodes for the closed list
@@ -59,7 +57,14 @@ public class Pathfinding : MonoBehaviour {
         }
 
         return FinalPath;
+    }
 
+
+    public List<Node> FindPath(Vector3 a_StartPos, Vector3 a_TargetPos) {
+        Node StartNode = GridReference.NodeFromWorldPoint(a_StartPos);//Gets the node closest to the starting position
+        Node TargetNode = GridReference.NodeFromWorldPoint(a_TargetPos);//Gets the node closest to the target position
+
+        return FindPath(StartNode, TargetNode);
     }
 
 

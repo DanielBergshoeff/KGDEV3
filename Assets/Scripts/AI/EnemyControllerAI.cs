@@ -7,22 +7,18 @@ public class EnemyControllerAI : MonoBehaviour {
     public Grid Grid;
     public Pathfinding Pathfinding;
     public float enemyViewRange = 10.0f;
-    public float enemyViewAngle = 90.0f;
+    public float enemyViewAngle = 45.0f;
     public NeuralNetwork NeuralNetwork;
 
     [SerializeField] private List<EnemyAI> enemyAIs;
     private List<List<Node>> gridPortions;
     private List<Color> gridColors;
 
-    private float currentSimulationSpeed = 1.0f;
-
     private float timePerCalculation = 1.0f;
     private float timer = 0.0f;
 
     // Use this for initialization
     void Start () {
-        Grid = GetComponent<Grid>();
-        Pathfinding = GetComponent<Pathfinding>();
 
         gridPortions = Grid.CreateGridPortions(enemyAIs.Count);
 
@@ -50,28 +46,22 @@ public class EnemyControllerAI : MonoBehaviour {
                         }
                     }
                 }
-
                 enemyAIs[i].CurrentPath = Pathfinding.FindPath(enemyAIs[i].transform.position, node.vPosition);
             }
+        }
 
-
-            for (int i = 0; i < enemyAIs.Count; i++) {
-                foreach (Node n in Grid.NodeArray) {
-                    if (n.bIsWall == true) {
-
-
-                        Vector3 heading = n.vPosition - enemyAIs[i].transform.position;
-                        float distance = heading.magnitude;
-                        Vector3 direction = heading / distance;
-                        float angle = Vector3.Angle(heading, enemyAIs[i].transform.forward);
-                        if (!Physics.Raycast(enemyAIs[i].transform.position, direction, distance, GameManager.gameManager.WallMask) && distance <= enemyViewRange && angle <= enemyViewAngle) {
-                            n.timeNotSeen = 0.0f;
-                        }
-                    }
+        for (int i = 0; i < enemyAIs.Count; i++) {
+            for (int j = 0; j < gridPortions[i].Count; j++) {
+                Vector3 heading = gridPortions[i][j].vPosition - enemyAIs[i].transform.position;
+                float distance = heading.magnitude;
+                Vector3 direction = heading / distance;
+                float angle = Vector3.Angle(heading, enemyAIs[i].transform.forward);
+                if (!Physics.Raycast(enemyAIs[i].transform.position, direction, distance, GameManager.gameManager.WallMask) && distance <= enemyViewRange && angle <= enemyViewAngle) {
+                    gridPortions[i][j].timeNotSeen = 0.0f;
                 }
             }
         }
-	}
+    }
 
     public void Init(NeuralNetwork neuralNetwork) {
         this.NeuralNetwork = neuralNetwork;
@@ -80,14 +70,12 @@ public class EnemyControllerAI : MonoBehaviour {
     //Function that draws the wireframe
     private void OnDrawGizmos() {
 
-        Gizmos.DrawWireCube(transform.position, new Vector3(Grid.vGridWorldSize.x, 1, Grid.vGridWorldSize.y));//Draw a wire cube with the given dimensions from the Unity inspector
-
         if (gridPortions != null) {
             for (int i = 0; i < gridPortions.Count; i++) {
                 if (gridPortions[i] != null) {
                     foreach (Node n in gridPortions[i]) {
                         if (n.bIsWall) {
-                            Gizmos.color = gridColors[i]; //Set the color of the node
+                            Gizmos.color = new Color(gridColors[i].r, gridColors[i].g, gridColors[i].b, n.timeNotSeen / 25f); //Set the color of the node
                         }
                         else {
                             Gizmos.color = Color.black;

@@ -128,8 +128,9 @@ public class Grid : MonoBehaviour {
 
     //Gets the closest node to the given world position.
     public Node NodeFromWorldPoint(Vector3 a_vWorldPos) {
-        float ixPos = ((a_vWorldPos.x + vGridWorldSize.x / 2) / vGridWorldSize.x);
-        float iyPos = ((a_vWorldPos.z + vGridWorldSize.y / 2) / vGridWorldSize.y);
+
+        float ixPos = ((a_vWorldPos.x - this.transform.position.x + vGridWorldSize.x / 2) / vGridWorldSize.x);
+        float iyPos = ((a_vWorldPos.z - this.transform.position.z + vGridWorldSize.y / 2) / vGridWorldSize.y);
 
         ixPos = Mathf.Clamp01(ixPos);
         iyPos = Mathf.Clamp01(iyPos);
@@ -143,9 +144,9 @@ public class Grid : MonoBehaviour {
 
     //Function that draws the wireframe
     private void OnDrawGizmos() {
-        /*
+        
         Gizmos.DrawWireCube(transform.position, new Vector3(vGridWorldSize.x, 1, vGridWorldSize.y));//Draw a wire cube with the given dimensions from the Unity inspector
-
+        /*
         if (NodeArray != null)//If the grid is not empty
         {
             foreach (Node n in NodeArray)//Loop through every node in the grid
