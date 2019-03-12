@@ -16,7 +16,7 @@ public class EnemyControllerAI : MonoBehaviour {
 
     private float currentSimulationSpeed = 1.0f;
 
-    private float timePerCalculation = 5.0f;
+    private float timePerCalculation = 1.0f;
     private float timer = 0.0f;
 
     // Use this for initialization
@@ -27,8 +27,9 @@ public class EnemyControllerAI : MonoBehaviour {
         gridPortions = Grid.CreateGridPortions(enemyAIs.Count);
 
         gridColors = new List<Color>();
-        gridColors.Add(Color.red);
-        gridColors.Add(Color.blue);
+        for (int i = 0; i < gridPortions.Count; i++) {
+            gridColors.Add(new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f)));
+        }
     }
 	
 	// Update is called once per frame
@@ -50,7 +51,7 @@ public class EnemyControllerAI : MonoBehaviour {
                     }
                 }
 
-                enemyAIs[i].CurrentPath = Pathfinding.FindPath(transform.position, node.vPosition);
+                enemyAIs[i].CurrentPath = Pathfinding.FindPath(enemyAIs[i].transform.position, node.vPosition);
             }
 
 

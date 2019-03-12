@@ -48,15 +48,12 @@ public class Grid : MonoBehaviour {
         
         foreach (Node n in NodeArray) {
             if(n.bIsWall == true && !InList(n, nodeLists)) {
-                Debug.Log(nodesAdded);
-                Debug.Log(availableNodes);
-                Debug.Log(amtOfPortions);
-                Debug.Log(nodesAdded / (availableNodes / amtOfPortions));
-                nodeLists[nodesAdded / (availableNodes / amtOfPortions)].Add(n);
-                nodesAdded++;
-            }
+                float portion = (float)availableNodes / (float)amtOfPortions;
 
-            AddNodesFromNeighbour(n, ref nodeLists, ref nodesAdded, amtOfPortions, availableNodes);
+                nodeLists[(int)(nodesAdded / (portion))].Add(n);
+                nodesAdded++;
+                AddNodesFromNeighbour(n, ref nodeLists, ref nodesAdded, amtOfPortions, availableNodes);
+            }
         }
 
         return nodeLists;
@@ -66,15 +63,10 @@ public class Grid : MonoBehaviour {
         List<Node> neighbours = GetNeighboringNodes(n);
         for (int i = 0; i < neighbours.Count; i++) {
             if (neighbours[i].bIsWall == true && !InList(neighbours[i], nodeLists)) {
-                Debug.Log(nodesAdded);
-                Debug.Log(availableNodes);
-                Debug.Log(amtOfPortions);
                 float portion = (float)availableNodes / (float)amtOfPortions;
-                Debug.Log(portion);
-                Debug.Log(nodesAdded / (portion));
                 nodeLists[(int)(nodesAdded / (portion))].Add(neighbours[i]);
                 nodesAdded++;
-                AddNodesFromNeighbour(n, ref nodeLists, ref nodesAdded, amtOfPortions, availableNodes);
+                AddNodesFromNeighbour(neighbours[i], ref nodeLists, ref nodesAdded, amtOfPortions, availableNodes);
             }
         }
     }
