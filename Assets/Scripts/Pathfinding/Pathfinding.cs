@@ -5,17 +5,9 @@ using UnityEngine;
 public class Pathfinding : MonoBehaviour {
 
     public Grid GridReference;//For referencing the grid class
-    public Transform StartPosition;//Starting position to pathfind from
-    public Transform TargetPosition;//Starting position to pathfind to
 
-    public EnemyAI enemyAI;
-
-    private void Update()//Every frame
-    {
-        FindPath(StartPosition.position, TargetPosition.position);//Find a path to the goal
-    }
-
-    void FindPath(Vector3 a_StartPos, Vector3 a_TargetPos) {
+    public List<Node> FindPath(Vector3 a_StartPos, Vector3 a_TargetPos) {
+        List<Node> FinalPath = new List<Node>();
         Node StartNode = GridReference.NodeFromWorldPoint(a_StartPos);//Gets the node closest to the starting position
         Node TargetNode = GridReference.NodeFromWorldPoint(a_TargetPos);//Gets the node closest to the target position
 
@@ -39,7 +31,8 @@ public class Pathfinding : MonoBehaviour {
 
             if (CurrentNode == TargetNode)//If the current node is the same as the target node
             {
-                GetFinalPath(StartNode, TargetNode);//Calculate the final path
+                FinalPath = GetFinalPath(StartNode, TargetNode);//Calculate the final path
+                return FinalPath;
             }
 
             foreach (Node NeighborNode in GridReference.GetNeighboringNodes(CurrentNode))//Loop through each neighbor of the current node
@@ -64,11 +57,14 @@ public class Pathfinding : MonoBehaviour {
             }
 
         }
+
+        return FinalPath;
+
     }
 
 
 
-    void GetFinalPath(Node a_StartingNode, Node a_EndNode) {
+    List<Node> GetFinalPath(Node a_StartingNode, Node a_EndNode) {
         List<Node> FinalPath = new List<Node>();//List to hold the path sequentially 
         Node CurrentNode = a_EndNode;//Node to store the current node being checked
 
@@ -80,8 +76,7 @@ public class Pathfinding : MonoBehaviour {
 
         FinalPath.Reverse();//Reverse the path to get the correct order
 
-        enemyAI.CurrentPath = FinalPath;//Set the final path
-
+        return FinalPath;
     }
 
     int GetManhattenDistance(Node a_nodeA, Node a_nodeB) {

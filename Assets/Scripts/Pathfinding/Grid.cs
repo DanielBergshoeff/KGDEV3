@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Grid : MonoBehaviour {
-
-    public Transform StartPosition;//This is where the program will start the pathfinding from.
+    
     public LayerMask WallMask;//This is the mask that the program will look for when trying to find obstructions to the path.
     public Vector2 vGridWorldSize;//A vector2 to store the width and height of the graph in world units.
     public float fNodeRadius;//This stores how big each square on the graph will be
     public float fDistanceBetweenNodes;//The distance that the squares will spawn from eachother.
 
-    Node[,] NodeArray;//The array of nodes that the A Star algorithm uses.
+    public Node[,] NodeArray;//The array of nodes that the A Star algorithm uses.
     public List<Node> FinalPath;//The completed path that the red line will be drawn along
 
 
-    float fNodeDiameter;//Twice the amount of the radius (Set in the start function)
+    public float fNodeDiameter;//Twice the amount of the radius (Set in the start function)
     int iGridSizeX, iGridSizeY;//Size of the Grid in Array units.
 
 
@@ -24,6 +23,72 @@ public class Grid : MonoBehaviour {
         iGridSizeX = Mathf.RoundToInt(vGridWorldSize.x / fNodeDiameter);//Divide the grids world co-ordinates by the diameter to get the size of the graph in array units.
         iGridSizeY = Mathf.RoundToInt(vGridWorldSize.y / fNodeDiameter);//Divide the grids world co-ordinates by the diameter to get the size of the graph in array units.
         CreateGrid();//Draw the grid
+    }
+
+    private void Update() {
+        foreach(Node n in NodeArray) {
+            n.timeNotSeen += Time.deltaTime;
+        }
+    }
+
+    public List<List<Node>> CreateGridPortions(int amtOfPortions) {
+        int nodesAdded = 0;
+
+        int availableNodes = 0;
+        foreach(Node n in NodeArray) {
+            if (n.bIsWall)
+                availableNodes++;
+        }
+
+
+        List<List<Node>> nodeLists = new List<List<Node>>(amtOfPortions);
+        for (int i = 0; i < nodeLists.Capacity; i++) {
+            nodeLists.Add(new List<Node>());
+        }
+        
+        foreach (Node n in NodeArray) {
+            if(n.bIsWall == true && !InList(n, nodeLists)) {
+                Debug.Log(nodesAdded);
+                Debug.Log(availableNodes);
+                Debug.Log(amtOfPortions);
+                Debug.Log(nodesAdded / (availableNodes / amtOfPortions));
+                nodeLists[nodesAdded / (availableNodes / amtOfPortions)].Add(n);
+                nodesAdded++;
+            }
+
+            AddNodesFromNeighbour(n, ref nodeLists, ref nodesAdded, amtOfPortions, availableNodes);
+        }
+
+        return nodeLists;
+    }
+
+    private void AddNodesFromNeighbour(Node n, ref List<List<Node>> nodeLists, ref int nodesAdded, int amtOfPortions, int availableNodes) {
+        List<Node> neighbours = GetNeighboringNodes(n);
+        for (int i = 0; i < neighbours.Count; i++) {
+            if (neighbours[i].bIsWall == true && !InList(neighbours[i], nodeLists)) {
+                Debug.Log(nodesAdded);
+                Debug.Log(availableNodes);
+                Debug.Log(amtOfPortions);
+                float portion = (float)availableNodes / (float)amtOfPortions;
+                Debug.Log(portion);
+                Debug.Log(nodesAdded / (portion));
+                nodeLists[(int)(nodesAdded / (portion))].Add(neighbours[i]);
+                nodesAdded++;
+                AddNodesFromNeighbour(n, ref nodeLists, ref nodesAdded, amtOfPortions, availableNodes);
+            }
+        }
+    }
+
+    private bool InList(Node n, List<List<Node>> nodeLists) {
+        foreach(List<Node> list in nodeLists) {
+            foreach(Node node in list) {
+                if(node == n) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     void CreateGrid() {
@@ -54,45 +119,15 @@ public class Grid : MonoBehaviour {
         List<Node> NeighborList = new List<Node>();//Make a new list of all available neighbors.
         int icheckX;//Variable to check if the XPosition is within range of the node array to avoid out of range errors.
         int icheckY;//Variable to check if the YPosition is within range of the node array to avoid out of range errors.
+        
+        int[] gridXNeighbours = new int[4] { 1, -1, 0, 0 };
+        int[] gridYNeighbours = new int[4] { 0, 0, 1, -1 };
 
-        //Check the right side of the current node.
-        icheckX = a_NeighborNode.iGridX + 1;
-        icheckY = a_NeighborNode.iGridY;
-        if (icheckX >= 0 && icheckX < iGridSizeX)//If the XPosition is in range of the array
-        {
-            if (icheckY >= 0 && icheckY < iGridSizeY)//If the YPosition is in range of the array
-            {
-                NeighborList.Add(NodeArray[icheckX, icheckY]);//Add the grid to the available neighbors list
-            }
-        }
-        //Check the Left side of the current node.
-        icheckX = a_NeighborNode.iGridX - 1;
-        icheckY = a_NeighborNode.iGridY;
-        if (icheckX >= 0 && icheckX < iGridSizeX)//If the XPosition is in range of the array
-        {
-            if (icheckY >= 0 && icheckY < iGridSizeY)//If the YPosition is in range of the array
-            {
-                NeighborList.Add(NodeArray[icheckX, icheckY]);//Add the grid to the available neighbors list
-            }
-        }
-        //Check the Top side of the current node.
-        icheckX = a_NeighborNode.iGridX;
-        icheckY = a_NeighborNode.iGridY + 1;
-        if (icheckX >= 0 && icheckX < iGridSizeX)//If the XPosition is in range of the array
-        {
-            if (icheckY >= 0 && icheckY < iGridSizeY)//If the YPosition is in range of the array
-            {
-                NeighborList.Add(NodeArray[icheckX, icheckY]);//Add the grid to the available neighbors list
-            }
-        }
-        //Check the Bottom side of the current node.
-        icheckX = a_NeighborNode.iGridX;
-        icheckY = a_NeighborNode.iGridY - 1;
-        if (icheckX >= 0 && icheckX < iGridSizeX)//If the XPosition is in range of the array
-        {
-            if (icheckY >= 0 && icheckY < iGridSizeY)//If the YPosition is in range of the array
-            {
-                NeighborList.Add(NodeArray[icheckX, icheckY]);//Add the grid to the available neighbors list
+        for (int i = 0; i < gridXNeighbours.Length; i++) {
+            icheckX = a_NeighborNode.iGridX + gridXNeighbours[i];
+            icheckY = a_NeighborNode.iGridY + gridYNeighbours[i];
+            if (icheckX >= 0 && icheckX < iGridSizeX && icheckY >= 0 && icheckY < iGridSizeY) {
+                NeighborList.Add(NodeArray[icheckX, icheckY]);
             }
         }
 
@@ -116,7 +151,7 @@ public class Grid : MonoBehaviour {
 
     //Function that draws the wireframe
     private void OnDrawGizmos() {
-
+        /*
         Gizmos.DrawWireCube(transform.position, new Vector3(vGridWorldSize.x, 1, vGridWorldSize.y));//Draw a wire cube with the given dimensions from the Unity inspector
 
         if (NodeArray != null)//If the grid is not empty
@@ -126,24 +161,17 @@ public class Grid : MonoBehaviour {
                 if (n.bIsWall)//If the current node is a wall node
                 {
                     Gizmos.color = Color.white;//Set the color of the node
+                    float timeNotSeen = n.timeNotSeen / 25f;
+                    Gizmos.color = new Color(timeNotSeen, timeNotSeen, timeNotSeen);
                 }
                 else {
                     Gizmos.color = Color.yellow;//Set the color of the node
                 }
 
-
-                if (FinalPath != null)//If the final path is not empty
-                {
-                    if (FinalPath.Contains(n))//If the current node is in the final path
-                    {
-                        Gizmos.color = Color.red;//Set the color of that node
-                    }
-
-                }
-
-
                 Gizmos.DrawCube(n.vPosition, Vector3.one * (fNodeDiameter - fDistanceBetweenNodes));//Draw the node at the position of the node.
             }
         }
+
+    */
     }
 }

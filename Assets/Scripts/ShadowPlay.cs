@@ -7,11 +7,15 @@ public class ShadowPlay : MonoBehaviour {
     public Camera fpsCamera;
     public LayerMask obstructionLayer;
     public LayerMask playerLayer;
+    public LayerMask defaultLayer;
     public Transform rightHandTransform;
     public GameObject playerLightPrefab;
     public GameObject gunGameObject;
     public Gun Gun;
     public Transform gunPosition;
+    public Canvas canvas;
+
+    private UICanvas UICanvas;
 
     public GameObject ClaimedEntity = null;
 
@@ -26,7 +30,7 @@ public class ShadowPlay : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+        UICanvas = canvas.GetComponent<UICanvas>();
 	}
 	
 	// Update is called once per frame
@@ -74,9 +78,22 @@ public class ShadowPlay : MonoBehaviour {
     /// </summary>
     private void Shoot() {
         if (Gun.amtOfBullets > 0) {
-            GameObject bullet = Instantiate(Gun.BulletPrefab, Gun.BulletInstantiatePosition.transform.position, Gun.BulletPrefab.transform.rotation);
-            bullet.GetComponent<Rigidbody>().AddForce(fpsCamera.transform.forward * 100f);
+            GameObject bullet = Instantiate(Gun.BulletPrefab, Gun.BulletInstantiatePosition.transform.position, Gun.BulletInstantiatePosition.transform.rotation);
+
+            RaycastHit hit;
+            Vector3 hitPos = fpsCamera.transform.position + fpsCamera.transform.forward * 1000.0f;
+            if(Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, 1000.0f)){
+                Debug.Log(hit.collider.gameObject.tag + " should be hit");
+                hitPos = hit.point;
+            }
+
+            Vector3 heading = hitPos - bullet.transform.position;
+            float distance = heading.magnitude;
+            Vector3 direction = heading / distance;
+
+            bullet.GetComponent<Rigidbody>().AddForce(direction * 5000f);
             Gun.amtOfBullets -= 1;
+            UICanvas.AmmoInGun.text = Gun.amtOfBullets.ToString();
         }
     }
 
@@ -121,7 +138,7 @@ public class ShadowPlay : MonoBehaviour {
         Vector3 rayOrigin = fpsCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0));
         Debug.DrawRay(rayOrigin, fpsCamera.transform.forward * 1000.0f);
 
-        if (Physics.Raycast(rayOrigin, fpsCamera.transform.forward, out hit, 3.0f, 0)){
+        if (Physics.Raycast(rayOrigin, fpsCamera.transform.forward, out hit, 10.0f, defaultLayer)){
             if (hit.collider.CompareTag("Gun")){
                 Debug.Log("GUN!");
                 if(gunGameObject != null) {
@@ -132,10 +149,14 @@ public class ShadowPlay : MonoBehaviour {
                 gunGameObject = hit.collider.gameObject;
                 gunGameObject.transform.parent = GetComponentInChildren<Camera>().transform;
                 gunGameObject.transform.localPosition = gunPosition.localPosition;
+                gunGameObject.transform.rotation = gunPosition.rotation;
                 Gun = gunGameObject.GetComponent<Gun>();
                 gunGameObject.GetComponent<Rigidbody>().isKinematic = true;
 
-
+                if(Gun != null) {
+                    UICanvas.AmmoInGun.text = Gun.amtOfBullets.ToString();
+                    UICanvas.TotalAmmo.text = Gun.amtOfBulletsTotal.ToString();
+                }
             }
         }
 

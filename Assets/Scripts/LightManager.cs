@@ -32,7 +32,7 @@ public class LightManager : MonoBehaviour {
             var direction = heading / heading.magnitude;
             Debug.DrawRay(lightsInRange[i].transform.position, direction * lightsInRange[i].GetComponent<Light>().range);
             if (Physics.Raycast(lightsInRange[i].transform.position, direction, out hit, lightsInRange[i].GetComponent<Light>().range, layerToCheck)) {
-                if (hit.point != position) {
+                if (hit.point != position && hit.collider.gameObject.CompareTag("Enemy")) {
                     return hit.collider.gameObject;
                 }
             }

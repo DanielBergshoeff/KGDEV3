@@ -17,6 +17,8 @@ public class Node {
 
     public int FCost { get { return igCost + ihCost; } }//Quick get function to add G cost and H Cost, and since we'll never need to edit FCost, we dont need a set function.
 
+    public float timeNotSeen = 0.0f;
+
     public Node(bool a_bIsWall, Vector3 a_vPos, int a_igridX, int a_igridY)//Constructor
     {
         bIsWall = a_bIsWall;//Tells the program if this node is being obstructed.
