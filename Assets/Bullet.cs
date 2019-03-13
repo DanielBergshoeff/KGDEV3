@@ -21,9 +21,14 @@ public class Bullet : MonoBehaviour {
         if (collision.gameObject.CompareTag("Enemy")) {
             Debug.Log("Enemy!");
             GameObject enemy = collision.gameObject;
+            EnemyAI enemyAI = null;
             while (true) {
                 try {
-                    enemy = enemy.transform.parent.gameObject;
+                    enemyAI = GetComponent<EnemyAI>();
+                    if (enemyAI == null)
+                        enemy = enemy.transform.parent.gameObject;
+                    else
+                        break;
                 }
                 catch (System.NullReferenceException) {
                     break;
@@ -44,9 +49,9 @@ public class Bullet : MonoBehaviour {
                     damage = 10.0f;
                     break;
             }
-
-            EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
-            enemyAI.TakeDamage(damage);
+            
+            if(enemyAI != null)
+                enemyAI.TakeDamage(damage);
 
             UICanvas.DamageDone.Invoke(collision.contacts[0].point, damage);
         }

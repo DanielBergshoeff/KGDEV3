@@ -3033,6 +3033,18 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1019474585826646, guid: 97fac426420a3e0439114c5c649e28c5, type: 2}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1542652439900930, guid: 97fac426420a3e0439114c5c649e28c5, type: 2}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1968203773293336, guid: 97fac426420a3e0439114c5c649e28c5, type: 2}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97fac426420a3e0439114c5c649e28c5, type: 2}
   m_IsPrefabAsset: 0
