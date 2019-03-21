@@ -49,6 +49,9 @@ public class EnemyNeuralNetwork : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Instantiate the EnemyControllerAIs and give them their NeuralNetworks
+    /// </summary>
     private void CreateEntities() {
         if (enemyControllerAIs != null) {
             for (int i = 0; i < enemyControllerAIs.Count; i++) {

@@ -626,9 +626,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34c31a145bd06ff4493bb7ca66c9429c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 1134424446862814, guid: 07907ebd2c8c6ec44b079625d6101544,
-    type: 2}
-  bulletInstantiatePosition: {fileID: 1629542124320098}
+  BulletPrefab: {fileID: 0}
+  BulletInstantiatePosition: {fileID: 0}
   amtOfBullets: 30
   amtOfBulletsTotal: 120
   bulletsPerMagazine: 30

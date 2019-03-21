@@ -1,13 +1,27 @@
 ﻿
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 
+[Serializable]
 public class NeuralNetwork : IComparable<NeuralNetwork>{
 
     private int[] layers; //layers
     private float[][] neurons; //neuron matrix
     private float[][][] weights; //weight matrix
     private float fitness; //fitness of the network
+
+    public int[] Layers {
+        get {
+            return layers;
+        }
+    }
+
+    public float[][][] Weights {
+        get {
+            return weights;
+        }
+    }
 
 	public NeuralNetwork(int[] layers) {
         this.layers = new int[layers.Length];
@@ -124,7 +138,7 @@ public class NeuralNetwork : IComparable<NeuralNetwork>{
                     float weight = weights[i][j][k];
 
                     //Mutate weight value
-                    float randomNumber = UnityEngine.Random.Range(0f, 1000f);
+                    float randomNumber = UnityEngine.Random.Range(0f, 100f);
 
 
                     if (randomNumber <= 2f) { //flip sign of weight

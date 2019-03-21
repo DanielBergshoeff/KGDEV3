@@ -844,7 +844,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 1
-  target: {x: 0, y: 0, z: 0}
+  distanceToTurn: 10
+  ViewRange: 10
+  ViewAngle: 45
+  EnemyLightPrefab: {fileID: 0}
+  BigLightPrefab: {fileID: 0}
+  myTarget: {fileID: 0}
+  timePerShot: 1
+  shotTimer: 0
+  bulletArrived: 0
+  timePerHit: 1
+  hitTimer: 0
+  hitDistance: 2
+  sprintDistance: 10
+  sprintSpeed: 9
+  pathfinding: {fileID: 0}
+  timePerCalculation: 1
+  timer: 0
+  lights: []
 --- !u!114 &114604059680904742
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -857,7 +874,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 1
-  target: {x: 0, y: 0, z: 0}
+  distanceToTurn: 10
+  ViewRange: 10
+  ViewAngle: 45
+  EnemyLightPrefab: {fileID: 0}
+  BigLightPrefab: {fileID: 0}
+  myTarget: {fileID: 0}
+  timePerShot: 1
+  shotTimer: 0
+  bulletArrived: 0
+  timePerHit: 1
+  hitTimer: 0
+  hitDistance: 2
+  sprintDistance: 10
+  sprintSpeed: 9
+  pathfinding: {fileID: 0}
+  timePerCalculation: 1
+  timer: 0
+  lights: []
 --- !u!114 &114690777766329002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -883,11 +917,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Grid: {fileID: 0}
   Pathfinding: {fileID: 0}
-  obstructionLayerMask:
-    serializedVersion: 2
-    m_Bits: 512
-  enemyViewRange: 10
-  enemyViewAngle: 90
   enemyAIs:
   - {fileID: 114604059680904742}
   - {fileID: 114340828735026202}
@@ -920,3 +949,4 @@ MonoBehaviour:
   vGridWorldSize: {x: 20, y: 20}
   fNodeRadius: 0.5
   fDistanceBetweenNodes: 0
+  fNodeDiameter: 0

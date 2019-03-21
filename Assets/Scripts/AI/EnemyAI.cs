@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour {
 
-    public enum State {
-        Patrol,
-        Attack,
-        Guard
-    }
-
+    public List<Node> GridPortion;
     public List<Node> CurrentPath;//The completed path that the red line will be drawn along
-    public float walkSpeed = 1.0f;
+    public float walkSpeed = 3.0f;
     public float Health {
         get { return health; }
         set {
@@ -22,7 +17,6 @@ public class EnemyAI : MonoBehaviour {
     private float health = 100.0f;
     
     private Animator animator;
-    private State currentState;
 
     //Guard
     public float distanceToTurn = 10.0f;
@@ -30,38 +24,54 @@ public class EnemyAI : MonoBehaviour {
     private Vector3 directionVectorLeft;
     private Vector3 directionVectorForward;
 
+    private StateMachine stateMachine;
 
+    public float ViewRange = 10.0f;
+    public float ViewAngle = 45.0f;
+
+    public NeuralNetwork neuralNetwork;
+
+    //Ranged state
+    public GameObject EnemyLightPrefab;
+    public GameObject BigLightPrefab;
+    public static Transform target;
+    public Transform myTarget;
+    public float timePerShot = 1.0f;
+    public float shotTimer = 0.0f;
+    public bool bulletArrived = false;
+
+    //Melee state
+    public float timePerHit = 1.0f;
+    public float hitTimer = 0.0f;
+    public float hitDistance = 2.0f;
+    public float sprintDistance = 10.0f;
+    public float sprintSpeed = 9.0f;
+    public Pathfinding pathfinding;
+
+    //Patrolling state
+    public float timePerCalculation = 1.0f;
+    public float timer = 0.0f;
+
+    public List<GameObject> lights;
+    
     // Use this for initialization
     void Start() {
+        if (target == null)
+            target = myTarget;
+
         animator = GetComponent<Animator>();
-        SwitchState(State.Patrol);
         CurrentPath = new List<Node>();
+        stateMachine = new StateMachine();
+        stateMachine.SwitchState(new PatrolState(this));
     }
 
     // Update is called once per frame
     void Update() {
-        switch (currentState) {
-            case State.Attack:
-                Attack();
-                break;
-            case State.Patrol:
-                Patrol();
-                break;
-            case State.Guard:
-                Guard();
-                break;
-        }
+        if(stateMachine != null)
+            stateMachine.ExecuteState();
     }
 
-    private void SwitchState(State newState) {
-        if(newState == State.Guard) {
-            StartGuard();
-        }
-
-        currentState = newState;
-    }
-
-    private void Patrol() {
+    public void MoveAlongPath(float speed) {
         if (CurrentPath != null) {
             if (CurrentPath.Count > 0) {
                 if (CurrentPath[0] != null) {
@@ -70,47 +80,23 @@ public class EnemyAI : MonoBehaviour {
                         CurrentPath.RemoveAt(0);
                     }
                     else {
-                        transform.position = Vector3.MoveTowards(transform.position, CurrentPath[0].vPosition, Time.deltaTime * walkSpeed);
+                        transform.position = Vector3.MoveTowards(transform.position, CurrentPath[0].vPosition, Time.deltaTime * speed);
                         transform.LookAt(CurrentPath[0].vPosition);
                     }
                 }
             }
-        } 
-    }
-
-    private void StartGuard() {
-        RaycastHit hitForward;
-        RaycastHit hitRight;
-        RaycastHit hitBack;
-        RaycastHit hitLeft;
-        RaycastHit closestHit;
-        Physics.Raycast(transform.position, transform.forward, out hitForward, 1000.0f, GameManager.gameManager.WallMask);
-        Physics.Raycast(transform.position, transform.right, out hitRight, 1000.0f, GameManager.gameManager.WallMask);
-        Physics.Raycast(transform.position, -transform.right, out hitLeft, 1000.0f, GameManager.gameManager.WallMask);
-        Physics.Raycast(transform.position, -transform.forward, out hitBack, 1000.0f, GameManager.gameManager.WallMask);
-
-        closestHit = (hitForward.distance + hitBack.distance < hitRight.distance + hitLeft.distance) ? hitForward : hitRight;
-        directionVectorLeft = new Vector3(closestHit.normal.x, 0, closestHit.normal.z);
-        directionVectorForward = new Vector3(closestHit.normal.z, 0, closestHit.normal.x);
-
-        transform.rotation = Quaternion.LookRotation(directionVectorForward, transform.up);
-    }
-
-    private void Guard() {
-        if (Physics.Raycast(transform.position, transform.forward, distanceToTurn, GameManager.gameManager.WallMask)) {
-            directionVectorForward *= -1;
-            transform.rotation = Quaternion.LookRotation(directionVectorForward, transform.up);
         }
-
-        transform.position = transform.position + directionVectorForward * Time.deltaTime * walkSpeed;
-    }
-
-    private void Attack() {
-        animator.SetFloat("Speed", 0f);
-        animator.SetBool("Aim", true);
     }
 
     public void TakeDamage(float damage) {
         Health -= damage;
+    }
+
+    public void InitNeuralNetwork(NeuralNetwork neuralNetwork, Transform target) {
+        this.neuralNetwork = neuralNetwork;
+        stateMachine = new StateMachine();
+        stateMachine.SwitchState(new RangedState(this));
+        target = target;
+        this.lights = new List<GameObject>();
     }
 }

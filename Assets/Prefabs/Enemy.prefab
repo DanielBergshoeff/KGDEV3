@@ -2031,6 +2031,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 3
   distanceToTurn: 10
+  ViewRange: 10
+  ViewAngle: 45
+  EnemyLightPrefab: {fileID: 0}
+  BigLightPrefab: {fileID: 0}
+  myTarget: {fileID: 0}
+  timePerShot: 1
+  shotTimer: 0
+  bulletArrived: 0
+  timePerHit: 1
+  hitTimer: 0
+  hitDistance: 2
+  sprintDistance: 10
+  sprintSpeed: 9
+  pathfinding: {fileID: 0}
+  timePerCalculation: 1
+  timer: 0
+  lights: []
 --- !u!137 &137415773980095464
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

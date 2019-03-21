@@ -88,8 +88,9 @@ public class NeuralNetworkTest : MonoBehaviour {
 
         entities = new List<FollowingEntity>();
 
+        Vector3 pos = new Vector3(UnityEngine.Random.Range(-25f, 25f), 0, UnityEngine.Random.Range(-25f, 25f));
+
         for (int i = 0; i < populationSize; i++) {
-            Vector3 pos = new Vector3(UnityEngine.Random.Range(-25f, 25f), 0, UnityEngine.Random.Range(-25f, 25f));
             FollowingEntity followingEntity = Instantiate(entityPrefab, pos, entityPrefab.transform.rotation).GetComponent<FollowingEntity>();
             followingEntity.Init(neuralNetworks[i], player.transform);
             entities.Add(followingEntity);
