@@ -12,6 +12,10 @@ public class EnemyControllerAI : MonoBehaviour {
     private List<List<Node>> gridPortions;
     private List<Color> gridColors;
 
+    private bool playerSeen = false;
+    private Vector3 positionPlayerSeen;
+    private float timeNotSeen = 0.0f;
+
     
 
     // Use this for initialization
@@ -25,22 +29,64 @@ public class EnemyControllerAI : MonoBehaviour {
         for (int i = 0; i < enemyAIs.Count; i++) {
             EnemyAI AI = enemyAIs[i].GetComponent<EnemyAI>();
             AI.pathfinding = Pathfinding;
+            AI.stateMachine = new StateMachine();
             AI.GridPortion = gridPortions[i];
+            AI.stateMachine.SwitchState(new PatrolState(AI, gridPortions[i]));
         }
     }
 	
 	// Update is called once per frame
 	void Update () {
-        for (int i = 0; i < enemyAIs.Count; i++) {
-            for (int j = 0; j < gridPortions[i].Count; j++) {
-                Vector3 heading = gridPortions[i][j].vPosition - enemyAIs[i].transform.position;
-                float distance = heading.magnitude;
-                Vector3 direction = heading / distance;
-                float angle = Vector3.Angle(heading, enemyAIs[i].transform.forward);
-                if (!Physics.Raycast(enemyAIs[i].transform.position, direction, distance, GameManager.gameManager.WallMask) && distance <= enemyAIs[i].ViewRange && angle <= enemyAIs[i].ViewAngle) {
-                    gridPortions[i][j].timeNotSeen = 0.0f;
+        bool checkPlayerSeen = false;
+        foreach(EnemyAI enemyAI in enemyAIs) {
+            if (enemyAI.PlayerSeen) {
+                checkPlayerSeen = true;
+                playerSeen = true;
+                positionPlayerSeen = enemyAI.PlayerPositionSeen; //Update the PlayerPosition
+            }
+
+            if (enemyAI.Energy <= 10.0f) { //If the AI is running too low on energy to fight
+                if(enemyAI.stateMachine.currentState.GetType() != typeof(WispGatheringState)){
+                    Debug.Log("Emergency energy acquisition state");
+                    enemyAI.stateMachine.SwitchState(new WispGatheringState(enemyAI));
                 }
             }
+            else if (enemyAI.PlayerSeen) { //If the AI can see the player
+                if (Vector3.Distance(positionPlayerSeen, enemyAI.transform.position) > 15.0f) {
+                    enemyAI.stateMachine.SwitchState(new RangedState(enemyAI, positionPlayerSeen)); //Switch to ranged state
+                    Debug.Log("Ranged state");
+                }
+                else {
+                    enemyAI.stateMachine.SwitchState(new MeleeState(enemyAI, positionPlayerSeen)); //Switch to melee state
+                    Debug.Log("Melee state");
+                }
+            }
+            else if (playerSeen && timeNotSeen <= 1.0f) { //If the enemy AI cannot currently see the player, but the player has been spotted
+                enemyAI.stateMachine.SwitchState(new RepositionState(enemyAI, positionPlayerSeen)); //Reposition to the position in which the player has last been seen
+                Debug.Log("Reposition state");
+            }
+            else if (playerSeen) { //If the player has been spotted and AI is not currently already searching
+                if (enemyAI.stateMachine.currentState.GetType() != typeof(SearchState)) {
+                    enemyAI.stateMachine.SwitchState(new SearchState(enemyAI, timeNotSeen, positionPlayerSeen));
+                    Debug.Log("Search state");
+                }
+            }
+            else if(enemyAI.Energy <= 70.0f) { //If the AI's energy is lower than 70%
+                if (enemyAI.stateMachine.currentState.GetType() != typeof(WispGatheringState)) {
+                    enemyAI.stateMachine.SwitchState(new WispGatheringState(enemyAI));
+                    Debug.Log("Energy acquisition state");
+                }
+            }
+            else if(enemyAI.stateMachine.currentState.GetType() != typeof(PatrolState)){ //If there is nothing more important to do
+                enemyAI.stateMachine.SwitchState(new PatrolState(enemyAI, enemyAI.GridPortion));
+                Debug.Log("Patrol state");
+            }
+        }
+        if (checkPlayerSeen) {
+            timeNotSeen = 0.0f;
+        }
+        else {
+            timeNotSeen += Time.deltaTime;
         }
     }
 

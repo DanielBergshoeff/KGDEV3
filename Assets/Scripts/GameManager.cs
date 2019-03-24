@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
 
     public LayerMask WallMask;
     public LayerMask ObstructionMask;
+    public GameObject player;
 
 	// Use this for initialization
 	void Start () {

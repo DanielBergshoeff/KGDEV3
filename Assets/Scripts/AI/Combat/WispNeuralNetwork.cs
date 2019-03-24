@@ -78,7 +78,7 @@ public class WispNeuralNetwork : MonoBehaviour {
 
             loadFromFile = false;
 
-            DrawNeuralNetwork.NeuralNetworkDrawing(neuralNetworks[0]);
+            DrawNeuralNetwork.NeuralNetworkDrawing(neuralNetworks[populationSize / 2]);
 
             generationNumber++;
             generationNr.text = generationNumber.ToString();
@@ -101,7 +101,7 @@ public class WispNeuralNetwork : MonoBehaviour {
         if (entities != null) {
             for (int i = 0; i < entities.Count; i++) {
                 if (entities[i] != null)
-                    entities[i].SelfDestroy();
+                    entities[i].SelfDestroy(null);
             }
         }
         isTraining = false;

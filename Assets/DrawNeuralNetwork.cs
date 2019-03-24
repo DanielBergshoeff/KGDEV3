@@ -38,12 +38,6 @@ public class DrawNeuralNetwork : MonoBehaviour {
                         Gizmos.DrawCube(pos + i * Vector3.right * 100.0f + j * Vector3.right * 5 + k * Vector3.down * 2, Vector3.one);
                         if(j - 1 >= 0) {
                             for (int l = 0; l < neuralNetworks[i].Layers[j - 1]; l++) {
-                                /*
-                                if (Mathf.Abs(neuralNetworks[i].Weights[j-1][k][l]) > 0.5f)
-                                    Gizmos.color = Color.red;
-                                else
-                                    Gizmos.color = Color.white;
-                                */
 
                                 Vector3 lineColor = Vector3.Lerp(new Vector3(Color.white.r, Color.white.g, Color.white.b), new Vector3(Color.red.r, Color.red.g, Color.red.b), Mathf.Abs(neuralNetworks[i].Weights[j - 1][k][l]));
                                 Gizmos.color = new Color(lineColor.x, lineColor.y, lineColor.z);

@@ -132,15 +132,12 @@ public class ShadowPlay : MonoBehaviour {
     /// Sends raycast forward and checks if position is in the shadow of enemy and player
     /// </summary>
     private void TakeOverEntity() {
-
-
         RaycastHit hit;
         Vector3 rayOrigin = fpsCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0));
         Debug.DrawRay(rayOrigin, fpsCamera.transform.forward * 1000.0f);
 
         if (Physics.Raycast(rayOrigin, fpsCamera.transform.forward, out hit, 10.0f, defaultLayer)){
             if (hit.collider.CompareTag("Gun")){
-                Debug.Log("GUN!");
                 if(gunGameObject != null) {
                     gunGameObject.transform.parent = null;
                     gunGameObject.GetComponent<Rigidbody>().isKinematic = false;
@@ -165,18 +162,10 @@ public class ShadowPlay : MonoBehaviour {
                 GameObject shadowCaster = LightManager.InShadow(hit.point, obstructionLayer);
                 GameObject shadowCasterPlayerLight = InPlayerLightShadow(hit.point, obstructionLayer);
                 if ((shadowCaster != null || shadowCasterPlayerLight != null) && (LightManager.InShadow(hit.point, playerLayer) || InPlayerLightShadow(hit.point, playerLayer))) {
-                    //Debug.Log("In shadow!");
                     if (shadowCaster == null)
                         shadowCaster = shadowCasterPlayerLight;
 
-                    while (true) {
-                        try {
-                            shadowCaster = shadowCaster.transform.parent.gameObject;
-                        }
-                        catch(System.NullReferenceException) {
-                            break;
-                        }
-                    }
+                    EnemyAI enemyAI = shadowCaster.GetComponentInParent<EnemyAI>();
 
                     //If the player is currently in control of an entity, leave that entity behind
                     if (ClaimedEntity != null) {
@@ -185,11 +174,11 @@ public class ShadowPlay : MonoBehaviour {
                     }
 
                     //Take control of the enemy whose shadow is overlapping with the players shadow
-                    transform.position = shadowCaster.transform.position;
-                    shadowCaster.transform.parent = this.gameObject.transform;
-                    ClaimedEntity = shadowCaster;
+                    transform.position = enemyAI.transform.position;
+                    enemyAI.transform.parent = this.gameObject.transform;
+                    ClaimedEntity = enemyAI.gameObject;
 
-                    shadowCaster.SetActive(false);
+                    enemyAI.gameObject.SetActive(false);
                 }
             }
         }

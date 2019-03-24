@@ -18,8 +18,9 @@ public class GatheringState : State {
 
         Wisp.transform.position = Wisp.transform.position + Wisp.transform.forward * Wisp.Speed * Time.deltaTime;
 
-        if (Physics.OverlapSphere(Wisp.transform.position, 0.5f).Length > 0) {
-            Wisp.SetFitnessAndDestroy();
+        Collider[] colliders = Physics.OverlapSphere(Wisp.transform.position, 0.5f);
+        if (colliders.Length > 0) {
+            Wisp.SetFitnessAndDestroy(colliders);
         }
 
         RaycastHit raycastHitForward;

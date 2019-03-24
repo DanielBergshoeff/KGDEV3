@@ -54,6 +54,8 @@ public class WispNeuralNetworkGathering : WispNeuralNetwork {
             generationNumber++;
             generationNr.text = generationNumber.ToString();
             isTraining = true;
+            wispSpawnPosition.position = GridManager.Instance.GetRandomNode().vPosition + Vector3.up * 3;
+            WispTargetPosition.position = GridManager.Instance.GetRandomNode().vPosition + Vector3.up * 3;
             CreateEntities();
             timer = 0.0f;
         }
@@ -73,7 +75,7 @@ public class WispNeuralNetworkGathering : WispNeuralNetwork {
         if (entities != null) {
             for (int i = 0; i < entities.Count; i++) {
                 if (entities[i] != null)
-                    entities[i].SetFitnessAndDestroy();
+                    entities[i].SetFitnessAndDestroy(null);
             }
         }
         isTraining = false;

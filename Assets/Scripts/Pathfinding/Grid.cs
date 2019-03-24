@@ -23,6 +23,8 @@ public class Grid : MonoBehaviour {
         iGridSizeX = Mathf.RoundToInt(vGridWorldSize.x / fNodeDiameter);//Divide the grids world co-ordinates by the diameter to get the size of the graph in array units.
         iGridSizeY = Mathf.RoundToInt(vGridWorldSize.y / fNodeDiameter);//Divide the grids world co-ordinates by the diameter to get the size of the graph in array units.
         CreateGrid();//Draw the grid
+
+        GridManager.Instance.grids.Add(this);
     }
 
     private void Update() {
@@ -146,25 +148,18 @@ public class Grid : MonoBehaviour {
     private void OnDrawGizmos() {
         
         Gizmos.DrawWireCube(transform.position, new Vector3(vGridWorldSize.x, 1, vGridWorldSize.y));//Draw a wire cube with the given dimensions from the Unity inspector
-        /*
-        if (NodeArray != null)//If the grid is not empty
-        {
-            foreach (Node n in NodeArray)//Loop through every node in the grid
-            {
-                if (n.bIsWall)//If the current node is a wall node
-                {
-                    Gizmos.color = Color.white;//Set the color of the node
-                    float timeNotSeen = n.timeNotSeen / 25f;
-                    Gizmos.color = new Color(timeNotSeen, timeNotSeen, timeNotSeen);
-                }
-                else {
-                    Gizmos.color = Color.yellow;//Set the color of the node
-                }
+    }
 
-                Gizmos.DrawCube(n.vPosition, Vector3.one * (fNodeDiameter - fDistanceBetweenNodes));//Draw the node at the position of the node.
+    public List<Node> GetAvailableNodes() {
+        List<Node> availableNodes =  new List<Node>();
+        for (int i = 0; i < NodeArray.GetLength(0); i++) {
+            for (int j = 0; j < NodeArray.GetLength(1); j++) {
+                if(NodeArray[i, j].bIsWall == true) {
+                    availableNodes.Add(NodeArray[i, j]);
+                }
             }
         }
 
-    */
+        return availableNodes;
     }
 }

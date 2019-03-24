@@ -8,6 +8,7 @@ TagManager:
   - Obstruction
   - Gun
   - Enemy
+  - Wisp
   layers:
   - Default
   - TransparentFX
