@@ -21,7 +21,7 @@ public class WispAI : MonoBehaviour {
     void Start () {
         lightTimers = new List<LightTimer>();
         stateMachine = new StateMachine();
-        stateMachine.SwitchState(new GatheringState(this));
+        stateMachine.SwitchState(new RoamState(this));
     }
 	
 	// Update is called once per frame
