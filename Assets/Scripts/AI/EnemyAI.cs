@@ -142,6 +142,14 @@ public class EnemyAI : MonoBehaviour {
 
     public void TakeDamage(float damage) {
         Health -= damage;
+        Debug.Log("Damage received");
+        if(Health <= 0f) {
+            Die();
+        }
+    }
+
+    public void Die() {
+        Destroy(gameObject);
     }
 
     public void InitNeuralNetwork(NeuralNetwork neuralNetwork, Transform target) {

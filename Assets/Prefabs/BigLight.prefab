@@ -53,6 +53,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4993218353155218}
   - component: {fileID: 114241077624967182}
+  - component: {fileID: 135769353515400648}
+  - component: {fileID: 114213098258836814}
   m_Layer: 13
   m_Name: BigLight
   m_TagString: Untagged
@@ -138,6 +140,17 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &114213098258836814
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1474617079260836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa5cf5890a059f74aa46dfe89175d319, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114241077624967182
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -150,6 +163,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeTillDestroy: 1
+--- !u!135 &135769353515400648
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1474617079260836}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!198 &198297685758349594
 ParticleSystem:
   m_ObjectHideFlags: 1

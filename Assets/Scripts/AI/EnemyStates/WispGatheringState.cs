@@ -15,10 +15,6 @@ public class WispGatheringState : State {
         lightToUse = LightManager.GetClosestLightInRange(EnemyAI.transform.position, EnemyAI.lightsInUse, EnemyAI.gameObject);
         if (lightToUse != null) {
             EnemyAI.lightsInUse.Add(lightToUse);
-            Debug.Log("Light found!");
-        }
-        else {
-            Debug.Log("No light in range!");
         }
     }
 
@@ -37,7 +33,6 @@ public class WispGatheringState : State {
             }
 
             if (bestWisp != null) {
-                Debug.Log("Hunting time!");
                 var heading = lightToUse.transform.position - bestWisp.transform.position;
                 var direction = heading / heading.magnitude;
                 Vector3 positionToMoveTo = lightToUse.transform.position - direction * 2;

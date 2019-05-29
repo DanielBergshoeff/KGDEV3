@@ -69,7 +69,6 @@ public class FlyingEntityControl : MonoBehaviour {
             }
 
             for (int i = 0; i < population; i++) {
-                Debug.Log("Instantiate child");
                 FlyingEntity flyingEntity = Instantiate(FlyingEntityPrefab, spawnPosition.position, Quaternion.identity).GetComponent<FlyingEntity>();
                 flyingEntities[i] = flyingEntity;
                 flyingEntity.entityValues.DistanceForCollisionCheck = ga.Population[i].Genes[0];

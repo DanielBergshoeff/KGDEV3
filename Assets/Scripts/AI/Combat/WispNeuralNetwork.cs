@@ -177,10 +177,11 @@ public class WispNeuralNetwork : MonoBehaviour {
         }
 
         string path = "Assets/Wisp/NeuralNetworks";
-        string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + "/NNCollection.asset");
+        //string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + "/NNCollection.asset");
+        /*
         AssetDatabase.CreateAsset(neuralNetworkCollection, assetPathAndName);
         AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
+        AssetDatabase.Refresh();*/
     }
 
     public void LoadNeuralNetworks() {
